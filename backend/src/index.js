@@ -45,7 +45,7 @@ app.use("/api", contactRoutes);
 // Global error handler (must be after routes)
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`✅ CORS allowed origin: ${allowedOrigin}`);
