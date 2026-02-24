@@ -5,20 +5,20 @@ export const sendContactEmail = async (contact) => {
   console.log("SMTP_HOST:", process.env.SMTP_HOST);
   console.log("SMTP_PORT:", process.env.SMTP_PORT);
 
-  const port = Number(process.env.SMTP_PORT) || 587;
-  const secure = port === 465;
-
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port,
-    secure,
+    host: process.env.SMTP_HOST || "smtp.gmail.com",
+    port: 587,              // 🔥 use 587 instead of 465
+    secure: false,          // MUST be false for 587
+    requireTLS: true,       // enforce TLS
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
+    connectionTimeout: 10000,  // 10 sec timeout
   });
-
-  await transporter.verify();
 
   const html = `
     <h3>New contact message</h3>
