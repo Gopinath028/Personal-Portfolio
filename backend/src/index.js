@@ -16,7 +16,7 @@ connectDB();
 const app = express();
 
 // CORS configuration
-const allowedOrigin = process.env.FRONTEND_URL || "https://gopinathkofficial.netlify.app/api";
+const allowedOrigin = process.env.FRONTEND_URL || "https://gopinathkofficial.netlify.app";
 app.use(
   cors({
     origin: allowedOrigin,
