@@ -49,5 +49,5 @@
 📈 Activity Graph
 <p align="center"> <img src="https://github-readme-activity-graph.vercel.app/graph?username=yourusername&theme=tokyo-night&hide_border=true"/> </p>
 🌐 Connect With Me
-<p align="center"> <a href="https://linkedin.com/in/yourprofile"> <img src="https://skillicons.dev/icons?i=linkedin" /> </a> <a href="mailto:your@email.com"> <img src="https://skillicons.dev/icons?i=gmail" /> </a> </p>
+<p align="center"> <a href="https:linkedin.com/in/gopinath-k-087779273"> <img src="https://skillicons.dev/icons?i=linkedin" /> </a> <a href="mailto:gopinathk028@email.com"> <img src="https://skillicons.dev/icons?i=gmail" /> </a> </p>
 <h3 align="center">🔥 "Code. Build. Improve. Repeat." 🔥</h3>
