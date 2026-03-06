@@ -40,9 +40,19 @@ export const sendContactEmail = async (contact) => {
       html,
     });
 
+
+    
     console.log("✅ Email sent successfully:", info.messageId);
   } catch (error) {
     console.error("❌ Mail sending failed:", error);
     throw error;
   }
+
+  console.log("Sending email with:", {
+  user: process.env.SMTP_USER,
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+});
+
+  
 };
