@@ -21,7 +21,7 @@ export const sendContactEmail = async (contact) => {
     // Email to you (admin notification)
     await resend.emails.send({
       from: "Portfolio <onboarding@resend.dev>",
-      to: process.env.NOTIFY_TO,
+      to: process.env.NOTIFY_TO || "gopinathk028@gmail.com",
       subject: `📩 New Contact: ${contact.subject || "Portfolio Message"}`,
       html: adminHtml,
     });
