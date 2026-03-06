@@ -1,25 +1,12 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendContactEmail = async (contact) => {
   try {
-    console.log("📨 Preparing to send contact email...");
+    console.log("📨 Sending contact email...");
 
-    // Create transporter
-   const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-});
-
-    // Email HTML template
-    const html = `
+    const adminHtml = `
       <h2>📩 New Contact Message</h2>
       <p><strong>Name:</strong> ${contact.name}</p>
       <p><strong>Email:</strong> ${contact.email}</p>
@@ -31,28 +18,38 @@ export const sendContactEmail = async (contact) => {
       <small>Contact ID: ${contact._id}</small>
     `;
 
-    // Send email
-    const info = await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
-      to: process.env.NOTIFY_TO || process.env.SMTP_USER,
+    // Email to you (admin notification)
+    await resend.emails.send({
+      from: "Portfolio <onboarding@resend.dev>",
+      to: process.env.NOTIFY_TO,
       subject: `📩 New Contact: ${contact.subject || "Portfolio Message"}`,
-      text: contact.message,
-      html,
+      html: adminHtml,
     });
 
+    console.log("✅ Admin email sent");
 
-    
-    console.log("✅ Email sent successfully:", info.messageId);
+    // Auto reply to user
+    const userHtml = `
+      <h2>Thanks for contacting me 👋</h2>
+      <p>Hi ${contact.name},</p>
+      <p>I received your message and will get back to you soon.</p>
+      <br/>
+      <p><strong>Your Message:</strong></p>
+      <p>${contact.message}</p>
+      <br/>
+      <p>Best regards,<br/>Portfolio Owner</p>
+    `;
+
+    await resend.emails.send({
+      from: "Portfolio <onboarding@resend.dev>",
+      to: contact.email,
+      subject: "Thanks for contacting me",
+      html: userHtml,
+    });
+
+    console.log("✅ User auto-reply sent");
+
   } catch (error) {
-    console.error("❌ Mail sending failed:", error);
-    throw error;
+    console.error("❌ Email sending failed:", error);
   }
-
-  console.log("Sending email with:", {
-  user: process.env.SMTP_USER,
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-});
-
-  
 };
