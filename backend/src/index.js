@@ -44,6 +44,8 @@ app.post("/api/test", (req, res) => {
 // API routes
 app.use("/api", contactRoutes);
 
+app.use("/api/contacts", contactRoutes);
+
 // Global error handler (must be after routes)
 app.use(errorHandler);
 
