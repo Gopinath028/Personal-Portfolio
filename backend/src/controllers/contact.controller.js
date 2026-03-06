@@ -7,14 +7,14 @@ export const createContact = async (req, res, next) => {
 
     const contactName = fullName || name;
 
-    // validation
     if (!contactName || !email || !message) {
-      const err = new Error("Name, email and message are required");
-      err.statusCode = 400;
-      throw err;
+      return res.status(400).json({
+        success: false,
+        message: "Name, email and message are required",
+      });
     }
 
-    // Save to DB
+    // Save to MongoDB
     const newContact = new Contact({
       fullName: contactName,
       email,
@@ -25,23 +25,19 @@ export const createContact = async (req, res, next) => {
 
     await newContact.save();
 
-    // Send Email
-    try {
-      await sendContactEmail({
-        name: contactName,
-        email,
-        phone,
-        subject,
-        message,
-        _id: newContact._id,
-      });
-    } catch (mailError) {
-      console.warn("⚠️ Failed to send contact email:", mailError);
-    }
+    // Send email (non-blocking)
+    sendContactEmail({
+      name: contactName,
+      email,
+      phone,
+      subject,
+      message,
+      _id: newContact._id,
+    });
 
     res.status(201).json({
       success: true,
-      message: "Message stored successfully",
+      message: "Message sent successfully",
     });
 
   } catch (error) {
