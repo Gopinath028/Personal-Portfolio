@@ -3,23 +3,32 @@ import { sendContactEmail } from "../utils/mailer.js";
 
 export const createContact = async (req, res, next) => {
   try {
-    const { fullName, email, phone, subject, message } = req.body;
+    const { fullName, name, email, phone, subject, message } = req.body;
 
-    // Basic validation
-    if (!fullName || !email || !message) {
-      const err = new Error("fullName, email and message are required");
+    const contactName = fullName || name;
+
+    // validation
+    if (!contactName || !email || !message) {
+      const err = new Error("Name, email and message are required");
       err.statusCode = 400;
       throw err;
     }
 
     // Save to DB
-    const newContact = new Contact({ fullName, email, phone, subject, message });
+    const newContact = new Contact({
+      fullName: contactName,
+      email,
+      phone,
+      subject,
+      message,
+    });
+
     await newContact.save();
 
-    // Send notification email (failures should not break API completely)
+    // Send Email
     try {
       await sendContactEmail({
-        name: fullName,
+        name: contactName,
         email,
         phone,
         subject,
@@ -28,12 +37,13 @@ export const createContact = async (req, res, next) => {
       });
     } catch (mailError) {
       console.warn("⚠️ Failed to send contact email:", mailError);
-      // continue; we still return success for the saved contact
     }
 
-    res
-      .status(201)
-      .json({ success: true, message: "Message stored successfully" });
+    res.status(201).json({
+      success: true,
+      message: "Message stored successfully",
+    });
+
   } catch (error) {
     console.error("❌ Error in createContact:", error);
     next(error);
