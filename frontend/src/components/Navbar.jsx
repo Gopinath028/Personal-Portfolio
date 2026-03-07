@@ -101,7 +101,7 @@ const Navbar = () => {
 
                             {/* CV Preview */}
                             <iframe
-                                src="/K Gopinath res.pdf"
+                                src="/Gopinath K resume _20260302_191947_0000.pdf"
                                 title="CV Preview"
                                 className="w-full h-[500px] rounded-b-lg"
                             ></iframe>
