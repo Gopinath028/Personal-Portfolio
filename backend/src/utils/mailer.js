@@ -4,6 +4,8 @@ export const sendContactEmail = async (contact) => {
   console.log("Inside mailer:");
   console.log("SMTP_HOST:", process.env.SMTP_HOST);
   console.log("SMTP_PORT:", process.env.SMTP_PORT);
+  console.log("HOST:", process.env.SMTP_HOST);
+console.log("USER:", process.env.SMTP_USER);
 
   const port = Number(process.env.SMTP_PORT) || 587;
   const secure = port === 465;
