@@ -53,8 +53,9 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`✅ CORS allowed origin: ${allowedOrigin}`);
+  console.log("HOST:", process.env.SMTP_HOST);
+  console.log("USER:", process.env.SMTP_USER);
 });
   
-
 console.log("SMTP_HOST:", process.env.SMTP_HOST);
 console.log("SMTP_PORT:", process.env.SMTP_PORT);
