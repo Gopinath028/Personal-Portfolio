@@ -30,6 +30,9 @@ export const sendContactEmail = async (contact) => {
     )}</p>
   `;
 
+  console.log("HOST:", process.env.SMTP_HOST);
+console.log("USER:", process.env.SMTP_USER);
+  
   return transporter.sendMail({
     from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
     to: process.env.NOTIFY_TO || process.env.SMTP_USER,
