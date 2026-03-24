@@ -4,11 +4,11 @@ import Contact from "../models/Contact.js";
 
 const router = express.Router();
 
-// POST /api/contacts
-router.post("/", createContact);
+// Public contact submission
+router.post("/contacts", createContact);
 
-// GET /api/contacts
-router.get("/", async (req, res, next) => {
+// Optional: simple listing endpoint (protect in real apps)
+router.get("/contacts", async (req, res, next) => {
   try {
     const contacts = await Contact.find().sort({ createdAt: -1 }).limit(50);
     res.json({ success: true, data: contacts });
@@ -18,4 +18,3 @@ router.get("/", async (req, res, next) => {
 });
 
 export default router;
-
