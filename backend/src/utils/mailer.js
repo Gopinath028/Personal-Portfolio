@@ -9,16 +9,6 @@ export const sendContactEmail = async (contact) => {
   const secure = port === 465;
 
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port,
-    secure,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-  
-  const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: 465,
   secure: true, // ✅ MUST be true for 465
@@ -27,6 +17,8 @@ export const sendContactEmail = async (contact) => {
     pass: process.env.SMTP_PASS,
   },
 });
+
+  console.log("PORT:", process.env.SMTP_PORT);
 
   await transporter.verify();
 
