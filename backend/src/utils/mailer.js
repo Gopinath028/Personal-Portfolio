@@ -12,8 +12,8 @@ console.log("USER:", process.env.SMTP_USER);
 
   const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: 465,
-  secure: true, // ✅ MUST be true for 465
+  port: 587,
+  secure: false, // ✅ MUST be true for 465
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
