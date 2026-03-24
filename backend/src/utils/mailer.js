@@ -8,7 +8,7 @@ export const sendContactEmail = async (contact) => {
 console.log("USER:", process.env.SMTP_USER);
 
   const port = Number(process.env.SMTP_PORT) || 587;
-  const secure = port === 465;
+  const secure = port === 587;
 
   const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
