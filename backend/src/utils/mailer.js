@@ -1,47 +1,36 @@
 import nodemailer from "nodemailer";
 
-export const sendContactEmail = async (contact) => {
-  console.log("Inside mailer:");
-  console.log("SMTP_HOST:", process.env.SMTP_HOST);
-  console.log("SMTP_PORT:", process.env.SMTP_PORT);
-  console.log("HOST:", process.env.SMTP_HOST);
-console.log("USER:", process.env.SMTP_USER);
-
-  const port = Number(process.env.SMTP_PORT) || 587;
-  const secure = port === 587;
-
-  const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
   port: 587,
-  secure: false, // ✅ MUST be true for 465
+  secure: false,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
 });
 
-  console.log("PORT:", process.env.SMTP_PORT);
-
-  await transporter.verify();
-
-  const html = `
-    <h3>New contact message</h3>
-    <p><strong>Name:</strong> ${contact.name}</p>
-    <p><strong>Email:</strong> ${contact.email}</p>
-    <p><strong>Message:</strong><br/>${(contact.message || "").replace(
-      /\n/g,
-      "<br/>"
-    )}</p>
-  `;
-
-
-  
-  return transporter.sendMail({
-    from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
-    to: process.env.NOTIFY_TO || process.env.SMTP_USER,
-    subject: `New contact: ${contact.subject || "No subject"}`,
-    text: contact.message,
-    html,
+export const sendContactEmail = async ({
+  name,
+  email,
+  phone,
+  subject,
+  message,
+  _id,
+}) => {
+  await transporter.sendMail({
+    from: process.env.SMTP_USER,
+    to: process.env.SMTP_USER, // where you receive messages
+    replyTo: email,
+    subject: `New Portfolio Contact - ${subject || "No Subject"}`,
+    html: `
+      <h2>New Contact Message</h2>
+      <p><b>ID:</b> ${_id}</p>
+      <p><b>Name:</b> ${name}</p>
+      <p><b>Email:</b> ${email}</p>
+      <p><b>Phone:</b> ${phone || "Not Provided"}</p>
+      <p><b>Subject:</b> ${subject || "No Subject"}</p>
+      <p><b>Message:</b><br/>${message}</p>
+    `,
   });
 };
-
