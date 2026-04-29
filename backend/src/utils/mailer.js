@@ -10,27 +10,22 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendContactEmail = async ({
-  name,
-  email,
-  phone,
-  subject,
-  message,
-  _id,
-}) => {
-  await transporter.sendMail({
-    from: process.env.SMTP_USER,
-    to: process.env.SMTP_USER, // where you receive messages
-    replyTo: email,
-    subject: `New Portfolio Contact - ${subject || "No Subject"}`,
-    html: `
-      <h2>New Contact Message</h2>
-      <p><b>ID:</b> ${_id}</p>
-      <p><b>Name:</b> ${name}</p>
-      <p><b>Email:</b> ${email}</p>
-      <p><b>Phone:</b> ${phone || "Not Provided"}</p>
-      <p><b>Subject:</b> ${subject || "No Subject"}</p>
-      <p><b>Message:</b><br/>${message}</p>
-    `,
-  });
+export const sendContactEmail = async (data) => {
+  try {
+    console.log("SMTP_USER:", process.env.SMTP_USER);
+
+    await transporter.verify();
+    console.log("SMTP Connected");
+
+    const info = await transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: process.env.SMTP_USER,
+      subject: "Test Contact",
+      html: "<h2>Email Working</h2>",
+    });
+
+    console.log("Mail Sent:", info.messageId);
+  } catch (error) {
+    console.error("MAIL ERROR:", error);
+  }
 };
