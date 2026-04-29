@@ -25,11 +25,11 @@ export const sendContactEmail = async ({
     await transporter.verify();
     console.log("SMTP connected");
 
-    const info = await transporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: process.env.SMTP_USER,
-      replyTo: email,
-      subject: subject || "Portfolio Contact",
+  const info = await transporter.sendMail({
+  from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
+  to: "yourpersonalemail@gmail.com",
+  replyTo: email,
+  subject: subject || "Portfolio Contact",
       html: `
         <h2>New Message</h2>
         <p>Name: ${name}</p>
@@ -39,7 +39,8 @@ export const sendContactEmail = async ({
         <p>Message: ${message}</p>
       `,
     });
-
+    console.log(info);
+console.log("Email send attempted");
     console.log("Mail sent:", info.messageId);
     return info;
   } catch (error) {
