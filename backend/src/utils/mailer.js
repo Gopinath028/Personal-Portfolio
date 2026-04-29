@@ -27,7 +27,7 @@ export const sendContactEmail = async ({
 
     const info = await transporter.sendMail({
       from: process.env.SMTP_USER,
-      to:"gopinathk028@gmail.com",
+      to: process.env.SMTP_USER,
       replyTo: email,
       subject: subject || "Portfolio Contact",
       html: `
