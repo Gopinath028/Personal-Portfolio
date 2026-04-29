@@ -2,60 +2,98 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
+
 import connectDB from "./config/db.js";
 import contactRoutes from "./routes/contact.routes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
-
-  // FIRST
-
+// Load env first
 dotenv.config();
 
+// Connect DB
 connectDB();
 
 const app = express();
 
-// CORS configuration
-const allowedOrigin = process.env.FRONTEND_URL || "https://gopinathkofficial.netlify.app";
+/* -----------------------------
+   CORS CONFIGURATION
+----------------------------- */
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://gopinathkofficial.netlify.app",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: function (origin, callback) {
+      // Allow Postman / server requests / no-origin requests
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
-// Built-in middleware
+/* -----------------------------
+   MIDDLEWARE
+----------------------------- */
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-
-
-// Logging (only in development)
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-// Health check route
+/* -----------------------------
+   ROUTES
+----------------------------- */
+
+// Health check
 app.get("/api/health", (req, res) => {
-  res.json({ success: true, message: "Backend is running" });
+  res.status(200).json({
+    success: true,
+    message: "Backend is running",
+  });
 });
 
+// Test route
 app.post("/api/test", (req, res) => {
-  res.json({ message: "Test route works" });
+  res.status(200).json({
+    success: true,
+    message: "Test route works",
+  });
 });
-// API routes
+
+// Contact routes
 app.use("/api", contactRoutes);
 
-app.use("/api/contacts", contactRoutes);
+/* -----------------------------
+   ERROR HANDLER
+----------------------------- */
 
-// Global error handler (must be after routes)
 app.use(errorHandler);
 
-const PORT = process.env.PORT;
+/* -----------------------------
+   SERVER START
+----------------------------- */
+
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`✅ CORS allowed origin: ${allowedOrigin}`);
-  console.log("HOST:", process.env.SMTP_HOST);
-  console.log("USER:", process.env.SMTP_USER);
+  console.log("✅ Allowed Origins:", allowedOrigins);
+  console.log("SMTP_HOST:", process.env.SMTP_HOST);
+  console.log("SMTP_PORT:", process.env.SMTP_PORT);
+  console.log("SMTP_USER:", process.env.SMTP_USER);
 });
-  
-console.log("SMTP_HOST:", process.env.SMTP_HOST);
-console.log("SMTP_PORT:", process.env.SMTP_PORT);
