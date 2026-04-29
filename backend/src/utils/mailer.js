@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
-  port: 587,
+  port: 2525, // better on some free hosts
   secure: false,
   auth: {
     user: process.env.SMTP_USER,
@@ -21,19 +21,29 @@ export const sendContactEmail = async ({
   message,
   _id,
 }) => {
-  const info = await transporter.sendMail({
-    from: process.env.SMTP_USER,
-    to: process.env.SMTP_USER,
-    replyTo: email,
-    subject: subject || "Portfolio Contact",
-    html: `
-      <h2>New Message</h2>
-      <p>Name: ${name}</p>
-      <p>Email: ${email}</p>
-      <p>Phone: ${phone}</p>
-      <p>Message: ${message}</p>
-    `,
-  });
+  try {
+    await transporter.verify();
+    console.log("SMTP connected");
 
-  return info;
+    const info = await transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to:"gopinathk028@gmail.com",
+      replyTo: email,
+      subject: subject || "Portfolio Contact",
+      html: `
+        <h2>New Message</h2>
+        <p>Name: ${name}</p>
+        <p>Email: ${email}</p>
+        <p>Phone: ${phone || ""}</p>
+        <p>ID: ${_id}</p>
+        <p>Message: ${message}</p>
+      `,
+    });
+
+    console.log("Mail sent:", info.messageId);
+    return info;
+  } catch (error) {
+    console.error("MAIL ERROR:", error);
+    throw error;
+  }
 };
